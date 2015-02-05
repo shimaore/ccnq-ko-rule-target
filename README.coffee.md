@@ -37,11 +37,11 @@ A `gwlist` item typically contains one of:
 - `gwid` -- if the call is to be routed out through a given gateway;
 - `carrierid` -- if the call is to be routed out through a carrier (a set of gateways with similar costs).
 
-          chosen = if @source_registrant() is true
+          chosen = if data.source_registrant is true
               'registrant'
-            else if @carrierid()?
+            else if data.carrierid?
               'carrier'
-            else if @gwid()?
+            else if data.gwid?
               'gateway'
           @chosen = ko.observable chosen
 
