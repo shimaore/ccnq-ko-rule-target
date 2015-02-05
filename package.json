@@ -1,0 +1,34 @@
+{
+  "name": "ccnq-ko-rule-target",
+  "version": "1.0.0",
+  "description": "CCNQ Knockout Widget for rule target",
+  "main": "index.js",
+  "scripts": {
+    "prepublish": "coffee -c -p README.coffee.md > index.js",
+    "pretest": "npm install",
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/shimaore/ccnq-ko-rule-target"
+  },
+  "keywords": [
+    "Knockout",
+    "CCNQ"
+  ],
+  "author": "Stéphane Alnet <stephane@shimaore.net> (http://stephane.shimaore.net/)",
+  "license": "Unlicense (http://unlicense.org/)",
+  "bugs": {
+    "url": "https://github.com/shimaore/ccnq-ko-rule-target/issues"
+  },
+  "homepage": "https://github.com/shimaore/ccnq-ko-rule-target",
+  "dependencies": {
+    "knockout": "^3.2.0",
+    "teacup": "^1.0.0",
+    "teacup-databind": "^1.0.1"
+  },
+  "devDependencies": {
+    "coffee-script": "^1.9.0",
+    "mocha": "^2.1.0"
+  }
+}
