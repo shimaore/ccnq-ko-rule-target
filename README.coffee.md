@@ -37,14 +37,6 @@ A `gwlist` item typically contains one of:
 - `gwid` -- if the call is to be routed out through a given gateway;
 - `carrierid` -- if the call is to be routed out through a carrier (a set of gateways with similar costs).
 
-          @source_registrant = ko.observable data.source_registrant
-          @gwid = ko.observable data.gwid
-          @carrierid = ko.observable data.carrierid
-
-          @gatewayValid = ko.pureComputed => (not @gwid()?) or @gwid() in gateways
-          @carrierValid = ko.pureComputed => (not @carrierid()?) or @carrierid() in carriers
-
-          # Initial values
           chosen = if @source_registrant() is true
               'registrant'
             else if @carrierid()?
@@ -52,9 +44,21 @@ A `gwlist` item typically contains one of:
             else if @gwid()?
               'gateway'
           @chosen = ko.observable chosen
-          @carrier_chosen = ko.pureComputed => @chosen() is 'carrier'
-          @gateway_chosen = ko.pureComputed => @chosen() is 'gateway'
-          @visible = ko.pureComputed => @chosen() isnt 'none'
+
+          @source_registrant = ko.pureComputed => @chosen() is 'registrant'
+          @gwid = ko.observable data.gwid
+          @carrierid = ko.observable data.carrierid
+
+          gateway_valid = -> (not @gwid()?) or @gwid() in gateways
+          carrier_valid = -> (not @carrierid()?) or @carrierid() in carriers
+          @valid = ko.pureComputed =>
+            switch @chosen()
+              when 'registrant'
+                true
+              when 'gateway'
+                gateway_valid()
+              when 'carrier'
+                carrier_valid()
 
 FIXME: We need a way to let the component's user know whether the data is valid or not!
 
@@ -64,7 +68,7 @@ FIXME: We need a way to let the component's user know whether the data is valid 
       html = ->
         name = "rule-target-#{Math.random()}"
         {a,ul,li,label,input,text} = teacup
-        ul '.target', bind: visible: 'visible', ->
+        ul '.target', bind: visible: 'chosen() !== "none"', ->
           li '.choice', ->
             label ->
               input
@@ -90,7 +94,7 @@ FIXME: We need a way to let the component's user know whether the data is valid 
               name: 'carrierid'
               bind:
                 value: 'carrierid'
-                enable: 'carrier_chosen'
+                enable: 'chosen() === "carrier"'
               required:true
           li '.choice', ->
             label ->
@@ -107,7 +111,7 @@ FIXME: We need a way to let the component's user know whether the data is valid 
               name: 'gwid'
               bind:
                 value: 'gwid'
-                enable: 'gateway_chosen'
+                enable: 'chosen() === "gateway"'
               required: true
 
       ko.components.register 'rule-target',
