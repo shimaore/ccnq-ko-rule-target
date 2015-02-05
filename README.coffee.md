@@ -22,12 +22,10 @@ Parameters:
 - carriers: a list of valid carriers
 
     module.exports = (ko) ->
+
       class RuleTarget
-        constructor: ({data,$root}) ->
-          {gateways,carriers} = $root
+        constructor: (data) ->
           assert data?, 'data is required'
-          assert gateways?, 'gateways is required'
-          assert carriers?, 'carriers is required'
 
 Data
 ----
@@ -37,41 +35,64 @@ A `gwlist` item typically contains one of:
 - `gwid` -- if the call is to be routed out through a given gateway;
 - `carrierid` -- if the call is to be routed out through a carrier (a set of gateways with similar costs).
 
-          chosen = if data.source_registrant is true
-              'registrant'
-            else if data.carrierid?
-              'carrier'
-            else if data.gwid?
-              'gateway'
-          @chosen = ko.observable chosen
-
-          @source_registrant = ko.pureComputed => @chosen() is 'registrant'
+          @source_registrant = ko.observable data.source_registrant
           @gwid = ko.observable data.gwid
           @carrierid = ko.observable data.carrierid
-
-          gateway_valid = (id) -> id? and id in gateways
-          carrier_valid = (id) -> id? and id in carriers
-
-          @valid = ko.pureComputed =>
-            switch @chosen()
-              when 'registrant'
-                true
-              when 'gateway'
-                gateway_valid @gwid()
-              when 'carrier'
-                carrier_valid @carrierid()
-              else
-                false
-
-FIXME: We need a way to let the component's user know whether the data is valid or not!
+          @_validated = ko.observable false
 
           # Behaviors
           return
 
+We expect `params="value:$data,$root:$root"`. This means `value` is a `RuleTarget` object.
+
+      view = ({value,$root}) ->
+        assert value instanceof RuleTarget, 'value should be an instance of RuleTarget'
+        {gateways,carriers} = $root
+        assert gateways?, 'gateways is required'
+        assert carriers?, 'carriers is required'
+
+        chosen = if value.source_registrant() is true
+            'registrant'
+          else if value.carrierid()?
+            'carrier'
+          else if value.gwid()?
+            'gateway'
+        @chosen = ko.observable chosen
+
+Flow the data back to the model.
+
+        @chosen.subscribe (chosen) ->
+          value.source_registrant chosen is 'registrant'
+
+        @gwid = value.gwid
+        @carrierid = value.carrierid
+
+        gateway_valid = (id) -> id? and id in gateways
+        carrier_valid = (id) -> id? and id in carriers
+
+        @valid = ko.pureComputed =>
+          is_valid = switch @chosen()
+            when 'registrant'
+              true
+            when 'gateway'
+              gateway_valid @gwid()
+            when 'carrier'
+              carrier_valid @carrierid()
+            else
+              false
+
+Flow the data back to the model.
+
+          value._validated is_valid # Flow back to the data.
+          is_valid
+
+HTML
+----
+
       html = ->
         name = "rule-target-#{Math.random()}"
         {a,ul,li,label,input,text} = teacup
-        ul '.target', bind: visible: 'chosen() !== "none"', ->
+        ul '.target', ->
           li '.choice', ->
             label ->
               input
@@ -118,7 +139,7 @@ FIXME: We need a way to let the component's user know whether the data is valid 
               required: true
 
       ko.components.register 'rule-target',
-        viewModel: RuleTarget
+        viewModel: view
         template: teacup.render html
 
       RuleTarget
