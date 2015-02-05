@@ -49,16 +49,19 @@ A `gwlist` item typically contains one of:
           @gwid = ko.observable data.gwid
           @carrierid = ko.observable data.carrierid
 
-          gateway_valid = -> (not @gwid()?) or @gwid() in gateways
-          carrier_valid = -> (not @carrierid()?) or @carrierid() in carriers
+          gateway_valid = (id) -> id? and id in gateways
+          carrier_valid = (id) -> id? and id in carriers
+
           @valid = ko.pureComputed =>
             switch @chosen()
               when 'registrant'
                 true
               when 'gateway'
-                gateway_valid()
+                gateway_valid @gwid()
               when 'carrier'
-                carrier_valid()
+                carrier_valid @carrierid()
+              else
+                false
 
 FIXME: We need a way to let the component's user know whether the data is valid or not!
 
