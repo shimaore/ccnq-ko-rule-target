@@ -39,9 +39,10 @@ A `gwlist` item typically contains one of:
           @gwid = ko.observable data.gwid
           @carrierid = ko.observable data.carrierid
           @_validated = ko.observable false
-
-          # Behaviors
           return
+
+View Model
+----------
 
 We expect `params="value:$data,$root:$root"`. This means `value` is a `RuleTarget` object.
 
@@ -85,6 +86,8 @@ Flow the data back to the model.
 
           value._validated is_valid # Flow back to the data.
           is_valid
+
+        return
 
 HTML
 ----
