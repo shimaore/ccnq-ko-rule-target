@@ -23,7 +23,8 @@ Parameters:
 
     module.exports = (ko) ->
       class RuleTarget
-        constructor: ({data,gateways,carriers}) ->
+        constructor: ({data,$root}) ->
+          {gateways,carriers} = $root
           assert data?, 'data is required'
           assert gateways?, 'gateways is required'
           assert carriers?, 'carriers is required'
@@ -112,6 +113,8 @@ FIXME: We need a way to let the component's user know whether the data is valid 
       ko.components.register 'rule-target',
         viewModel: RuleTarget
         template: teacup.render html
+
+      RuleTarget
 
     teacup = require 'teacup'
     teacup.use (require 'teacup-databind')()
