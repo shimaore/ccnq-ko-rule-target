@@ -61,8 +61,8 @@ We expect `params="value:$data,$root:$root"`. This means `value` is a `RuleTarge
 
 Flow the data back to the model.
 
-        @chosen.subscribe (chosen) ->
-          value.source_registrant chosen is 'registrant'
+        @chosen.subscribe =>
+          value.source_registrant @chosen() is 'registrant'
 
         @gwid = value.gwid
         @carrierid = value.carrierid
