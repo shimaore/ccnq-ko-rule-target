@@ -60,32 +60,35 @@ We expect `params="value:$data,$root:$root"`. This means `value` is a `RuleTarge
             'gateway'
         @chosen = ko.observable chosen
 
-Flow the data back to the model.
-
-        @chosen.subscribe =>
-          value.source_registrant @chosen() is 'registrant'
-
         @gwid = value.gwid
         @carrierid = value.carrierid
 
         gateway_valid = (id) -> id? and id in gateways
         carrier_valid = (id) -> id? and id in carriers
 
-        @valid = ko.pureComputed =>
-          is_valid = switch @chosen()
+        @valid = ko.computed =>
+          switch @chosen()
             when 'registrant'
+              @gwid null
+              @carrierid null
               true
             when 'gateway'
+              @carrierid null
               gateway_valid @gwid()
             when 'carrier'
+              @gwid null
               carrier_valid @carrierid()
             else
+              @gwid null
+              @carrierid null
               false
 
 Flow the data back to the model.
 
-          value._validated is_valid # Flow back to the data.
-          is_valid
+        @chosen.subscribe =>
+          value.source_registrant @chosen() is 'registrant'
+        @valid.subscribe (is_valid) =>
+          value._validated is_valid
 
         return
 
