@@ -61,6 +61,7 @@ We expect `params="value:$data,$root:$root"`. This means `value` is a `RuleTarge
           else if value.gwid()?
             'gateway'
         @chosen = ko.observable chosen
+        @name = "rule-entry-chosen-#{Math.random()}"
 
         @gwid = value.gwid
         @carrierid = value.carrierid
@@ -98,27 +99,26 @@ HTML
 ----
 
       html = ->
-        name = "rule-target-#{Math.random()}"
         {a,ul,li,label,input,text} = teacup
         ul '.target', ->
           li '.choice', ->
             label ->
               input
                 type:'radio'
-                name:name
                 value:'registrant'
                 required:true
                 bind:
                   checked: 'chosen'
+                  attr: '{name:name}'
               text 'Use Registrant'
           li '.choice', ->
             label ->
               input
                 type:'radio'
-                name:name
                 value:'carrier'
                 bind:
                   checked: 'chosen'
+                  attr: '{name:name}'
                 required:true
               text 'Use Carrier '
             input
@@ -132,10 +132,10 @@ HTML
             label ->
               input
                 type:'radio'
-                name:name
                 value:'gateway'
                 bind:
                   checked: 'chosen'
+                  attr: '{name:name}'
                 required:true
               text 'Use Gateway '
             input
