@@ -8,20 +8,22 @@ This module adds a `rule-target` component in Knockout.
 Usage
 -----
 
-```javascript
-require('ccnq-ko-rule-target')(knockout);
-```
-
-```html
-<rule-target bind-data="params: data: ..., gateways: ..., carriers: ..."></rule-target>
+```coffeescript
+{RuleTarget,rule_target} = (require 'ccnq-ko-rule-target') knockout
 ```
 
 Parameters:
-- data: the `gwlist` item
-- gateways: a list of valid gateways
-- carriers: a list of valid carriers
+- value: the `gwlist` item
+- $root.gateways: a list of valid gateways
+- $root.carriers: a list of valid carriers
 
     module.exports = (ko) ->
+
+      tag_name = 'rule-target'
+
+      rule_target = (f) ->
+        {tag} = teacup
+        tag tag_name, params: "value:#{f},$root:$root"
 
       class RuleTarget
         constructor: (data) ->
@@ -148,7 +150,7 @@ HTML
         viewModel: view
         template: teacup.render html
 
-      RuleTarget
+      {RuleTarget,rule_target}
 
     teacup = require 'teacup'
     teacup.use (require 'teacup-databind')()
