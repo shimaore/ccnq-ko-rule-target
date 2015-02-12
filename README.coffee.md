@@ -43,7 +43,8 @@ View Model
 We expect `params="value:$data,$root:$root"`. This means `value` is a `RuleTarget` object.
 
       @view ({value,$root}) ->
-        assert value instanceof RuleTarget, 'value should be an instance of RuleTarget'
+        # assert value instanceof RuleTarget, 'value should be an instance of RuleTarget'
+        assert value?, 'value is required'
         {gateways,carriers} = $root
         assert gateways?, 'gateways is required'
         assert carriers?, 'carriers is required'
