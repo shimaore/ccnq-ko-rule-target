@@ -19,7 +19,7 @@ Parameters:
 
     module.exports = (require 'ccnq-ko') 'rule-target', (ko) ->
 
-      class RuleTarget
+      @data class RuleTarget
         constructor: (data) ->
           assert data?, 'data is required'
 
