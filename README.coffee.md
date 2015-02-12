@@ -17,13 +17,7 @@ Parameters:
 - $root.gateways: a list of valid gateways
 - $root.carriers: a list of valid carriers
 
-    module.exports = (ko) ->
-
-      tag_name = 'rule-target'
-
-      rule_target = (f) ->
-        {tag} = teacup
-        tag tag_name, params: "value:#{f},$root:$root"
+    module.exports = (require 'ccnq-ko') 'rule-target', (ko) ->
 
       class RuleTarget
         constructor: (data) ->
@@ -48,7 +42,7 @@ View Model
 
 We expect `params="value:$data,$root:$root"`. This means `value` is a `RuleTarget` object.
 
-      view = ({value,$root}) ->
+      @view ({value,$root}) ->
         assert value instanceof RuleTarget, 'value should be an instance of RuleTarget'
         {gateways,carriers} = $root
         assert gateways?, 'gateways is required'
@@ -98,8 +92,7 @@ Flow the data back to the model.
 HTML
 ----
 
-      html = ->
-        {a,ul,li,label,input,text} = teacup
+      @html ({a,ul,li,label,input,text}) ->
         ul '.target', ->
           li '.choice', ->
             label ->
@@ -145,12 +138,6 @@ HTML
                 value: 'gwid'
                 enable: 'chosen() === "gateway"'
               required: true
-
-      ko.components.register 'rule-target',
-        viewModel: view
-        template: teacup.render html
-
-      {RuleTarget,rule_target}
 
     teacup = require 'teacup'
     teacup.use (require 'teacup-databind')()
