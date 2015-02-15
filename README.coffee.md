@@ -17,7 +17,7 @@ Parameters:
 - $root.gateways: a list of valid gateways
 - $root.carriers: a list of valid carriers
 
-    module.exports = (require 'ccnq-ko') 'rule-target', (ko) ->
+    module.exports = (require 'kow') 'rule-target', (ko) ->
 
       @data class RuleTarget
         constructor: (data) ->
@@ -140,6 +140,4 @@ HTML
                 enable: 'chosen() === "gateway"'
               required: true
 
-    teacup = require 'teacup'
-    teacup.use (require 'teacup-databind')()
     assert = require 'assert'
